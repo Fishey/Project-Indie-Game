@@ -18,9 +18,13 @@ public class EnemyClass : Entity {
 	// Update is called once per frame
 	void Update () {
 		float distanceToPlayer = Vector3.Distance (transform.position, player.position);
-		Debug.Log (distanceToPlayer);
-		if (distanceToPlayer < aggroRange)
+		if (distanceToPlayer < aggroRange && agent.isActiveAndEnabled && agent.isOnNavMesh)
 			agent.SetDestination (player.position);
 		else agent.SetDestination (origin);
+	}
+
+	protected override void Die()
+	{
+		Destroy (gameObject);
 	}
 }

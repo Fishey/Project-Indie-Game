@@ -3,34 +3,23 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-
-public enum ABILITIES { first, second, third }
-public enum GunType { Support, Damage, Tank }
-
 [RequireComponent(typeof(PlayerMovement))]
-//[RequireComponent(typeof(ShieldAbility))]
 public class PlayerClass : Entity
 {
     [SerializeField]
-    List<GameObject> ownedWeapons = new List<GameObject>();
-    int gunIndex;
+    List<WeaponScript> ownedWeapons = new List<WeaponScript>();
     PlayerMovement playerMove;
     [SerializeField]
     Vector3 lastCheckpoint;
     [SerializeField]
-    Transform currentWeapon;
-    float utime = 0;
-    float dTime = 0;
-
+    WeaponScript currentWeapon;
 
     //only in player
     int money = 0;
     [SerializeField]
     int xp = 0;
-    float xptoNextlvl = 100;
-    [SerializeField]
+    public float xpToNextlvl = 100;
     int level = 1;
-    [SerializeField]
     int score = 0;
 
    public int Score
@@ -65,7 +54,7 @@ public class PlayerClass : Entity
 		get { return this.xp;}
 		set {
 			this.xp = value;
-			if (xp >= xptoNextlvl)
+			if (xp >= xpToNextlvl)
 				levelUp ();
 		}
 	}
@@ -79,11 +68,13 @@ public class PlayerClass : Entity
 		}
 	}
 
-    public float GetAttackSpeed()
-    {
-        float tmp = attackSpeed;
-        return tmp;
-    }
+    public float AttackSpeed {
+		get { return this.attackSpeed;}
+		set { this.attackSpeed = value;
+			if (currentWeapon != null) currentWeapon.AttackSpeed = value;
+		}
+
+	}
 
     public void SetStats(int moveSpeed, float attackSpeed)
     {
@@ -114,7 +105,7 @@ public class PlayerClass : Entity
         maxHealth += 5;
         maxEnergy += 1;
         ResetStats();
-        xptoNextlvl *= 1.5f;
+        xpToNextlvl *= 1.5f;
     }
     //End Stats
 
@@ -125,13 +116,14 @@ public class PlayerClass : Entity
   
     protected override void Die()
     {
-        playerMove.SetMovementSpeed(0);
-        SetStats(0, attackSpeed * 2);
+		transform.position = lastCheckpoint;
+		currentHealth = maxHealth;
     }
     void Start()
     {
-        //currentWeapon = GetComponentInChildren<SupportGunScript>();
-
+		ownedWeapons.Add (transform.GetComponentInChildren<WeaponScript> ());
+		currentWeapon = ownedWeapons [0];
+		currentWeapon.Damage = 25;
         playerMove = GetComponent<PlayerMovement>();
         playerMove.SetOwner(this);
         playerMove.SetMovementSpeed(movementSpeed);

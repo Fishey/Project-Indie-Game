@@ -23,7 +23,6 @@ public class PlayerMovement : MonoBehaviour
 
     float utime = 0;
 
-    // Use this for initialization
     void Start()
     {
 		mainCam = Camera.main.transform;
@@ -34,10 +33,8 @@ public class PlayerMovement : MonoBehaviour
 		distToGround = _collider.bounds.extents.y;
     }
 
-	private bool isGrounded()
+	private bool isGrounded() // Currently checks if the player is either on the floor or on the ceiling... that could cause problems later
 	{
-		Debug.DrawLine (transform.position, transform.position+Vector3.up);
-		//return Physics.Raycast (transform.position, -Vector3.up, distToGround + 0.1f);
 		bool canJump = false;
 		if (Physics.Raycast (transform.position, Vector3.up, distToGround + 0.1f) || Physics.Raycast (transform.position, -Vector3.up, distToGround + 0.1f))
 			canJump = true;
@@ -121,7 +118,6 @@ public class PlayerMovement : MonoBehaviour
 
 	void Update()
 	{
-		Debug.Log (isGrounded ());
 		/*
 		if (Input.GetButtonDown("Cancel") && playerNum == 1 && !inGameMenu.activeInHierarchy) // May be used later to open Pause Menu
 		{
@@ -177,11 +173,21 @@ public class PlayerMovement : MonoBehaviour
             _rigidbody.velocity = _rigidbody.velocity.normalized * _maxSpeed;
         }
 
-		if (Input.GetButtonDown(jumpString) && isGrounded() && ready == true)
+		if (horizontalspeed < 0f)
 		{
-			Debug.Log(jumpHeight);
+			Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Vector3.right), 5f);
+		}
+		else {
+			Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(-Vector3.right), 5f);
+		}
+
+		/*
+		if (_rigidbody.velocity.magnitude > 0.01f)
+			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(_rigidbody.velocity), 5f);
+		*/
+		if (Input.GetButtonDown(jumpString) && isGrounded())
+		{
 			_rigidbody.velocity += transform.up*jumpHeight;
-			utime = 0;
 		}
     }
 
