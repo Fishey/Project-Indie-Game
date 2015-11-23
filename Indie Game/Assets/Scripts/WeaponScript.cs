@@ -31,10 +31,9 @@ public class WeaponScript : MonoBehaviour {
 			_coolDownTimer -= Time.deltaTime;
 	}
 
-	void OnCollisionEnter(Collision collision) 
+	void OnTriggerEnter(Collider collision) 
 	{
-		if (collision.collider.tag == "Enemy" && _coolDownTimer <= 0) {
-			Debug.Log ("hit enemy");
+		if (collision.tag == "Enemy" && _coolDownTimer <= 0) {
 
 			collision.gameObject.GetComponent<EnemyClass> ().ChangeHealth (-Damage);
 			if (AttackSpeed != 0)

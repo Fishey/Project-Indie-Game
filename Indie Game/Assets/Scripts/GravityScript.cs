@@ -1,45 +1,86 @@
 ﻿using UnityEngine;
+using UnityStandardAssets.Utility;
 using System.Collections;
 
 public class GravityScript : MonoBehaviour {
 
 	public float speed = 5.0f;
 
-	private Transform player;
-	private bool flipped = false;
-	private Quaternion qTo = Quaternion.identity;
-	private Quaternion qToCamera = Quaternion.identity;
-	private Quaternion qFlip = Quaternion.Euler(180, 0, 0);
-	private Quaternion qFlipCamera = Quaternion.Euler(0,0,180);
+	private Transform _player;
+	private Transform _enemies;
+	private Transform _sun;
+	private EnemyClass[] _enemyScripts;
+	private bool _flipped = false;
+	private bool _flipInProgress = false;
+
+	private Quaternion _qTo = Quaternion.identity;
+	private Quaternion _qToEnemy = Quaternion.identity;
+	private Quaternion _qToCamera = Quaternion.identity;
+	private Quaternion _qToSun = Quaternion.Euler(45, 0, 0);
+	
+	private Quaternion _qFlip = Quaternion.Euler(180, 0, 0);
+	private Quaternion _qFlipCamera = Quaternion.Euler(0,0,180);
+	private Quaternion _qFlipSun = Quaternion.Inverse(Quaternion.Euler(45, 0, 0));
+
+
+
+	private SmoothFollow cameraFollowScript;
 
 	// Use this for initialization
 	void Start () {
-		player = GameObject.FindGameObjectWithTag ("Player").transform;
-
+		_sun = GameObject.Find("Sun").transform;
+		_player = GameObject.FindGameObjectWithTag ("Player").transform;
+		_enemies = GameObject.Find("Enemies").transform;
+		_enemyScripts = new EnemyClass[]{};
+		cameraFollowScript = Camera.main.GetComponent<SmoothFollow>();
 	}
 
-	void FixedUpdate() {
-		if (Input.GetButtonDown ("P1_Fire1")) {
-			Physics.gravity = new Vector3(0, -Physics.gravity.y, 0);
-			if (!flipped){
-				qTo = qFlip;
-				qToCamera = qFlipCamera;
-				flipped = true;
-				
-			}
-			else {
-				qTo = Quaternion.identity;
-				qToCamera = Quaternion.identity;
-				flipped = false;
-				
-			}
+	public void Flip()
+	{
+		Physics.gravity = new Vector3(0, -Physics.gravity.y, 0);
+		_flipInProgress = true;
+		if (!_flipped){
+			_qTo = _qFlip;
+			_qToCamera = _qFlipCamera;
+			_qToSun = _qFlipSun;
+			_flipped = true;
+			_enemyScripts = _enemies.GetComponentsInChildren<EnemyClass>();
+			cameraFollowScript.Height -= cameraFollowScript.Height;
 		}
+		else {
+			_qTo = Quaternion.identity;
+			_qToCamera = Quaternion.identity;
+			_qToSun = Quaternion.Euler(45,0,0);
+			_flipped = false;
+			_enemyScripts = _enemies.GetComponentsInChildren<EnemyClass>();
+			cameraFollowScript.Height -= cameraFollowScript.Height;
+			
+		}
+		
+		_qToEnemy = _qTo;
+	}
+
+	void Update() {
+		if (Input.GetButtonDown ("P1_Flip")) {
+			Flip();
+		}
+	}
+
+	void UpdateRotation()
+	{
+		foreach(EnemyClass e in _enemyScripts){
+			if (e)
+				e.transform.rotation = Quaternion.RotateTowards(e.transform.rotation, _qToEnemy, Time.deltaTime * speed);
+		}
+		
+		Camera.main.transform.rotation = Quaternion.RotateTowards(Camera.main.transform.rotation, _qToCamera, Time.deltaTime * speed);
+		_player.rotation = Quaternion.RotateTowards(_player.rotation, _qTo, Time.deltaTime * speed);
+		_sun.rotation = Quaternion.RotateTowards(_sun.rotation, _qToSun, Time.deltaTime * speed);
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
-
-		Camera.main.transform.rotation = Quaternion.RotateTowards(Camera.main.transform.rotation, qToCamera, Time.deltaTime * speed);
-		player.rotation = Quaternion.RotateTowards(player.rotation, qTo, Time.deltaTime * speed);
+		//if (_player.rotation != _qTo || Camera.main.transform.rotation != _qToCamera || _qToSun != _sun.rotation)
+			UpdateRotation();
 	}
 }

@@ -3,24 +3,82 @@ using System.Collections;
 
 public class EnemyClass : Entity {
 
-	Transform player;
-	Vector3 origin;
-	NavMeshAgent agent;
-	public float aggroRange;
+	private Transform _player;
+	private Vector3 _origin;
+	private Vector3 _destination;
 
+	private Rigidbody _rigidbody;
+	private float destroyTimer = 10f;
+	public float Speed;
+	private float _distToGround;
+	private Transform _mainCam;
+	private CapsuleCollider _collider;
+
+	public float aggroRange;
+	
 	void Start()
 	{
-		player = GameObject.FindGameObjectWithTag ("Player").transform;
-		agent = GetComponent<NavMeshAgent> ();
-		origin = transform.position;
+		_player = GameObject.FindGameObjectWithTag ("Player").transform;
+		_origin = transform.position;
+		_collider = GetComponent<CapsuleCollider> ();
+		_rigidbody = GetComponent<Rigidbody>();
+		_mainCam = Camera.main.transform;
+		_distToGround = _collider.bounds.extents.y;
+	}
+
+	private bool isGrounded()
+	{
+		bool canJump = false;
+		if (Physics.Raycast (transform.position, Vector3.up, _distToGround + 0.1f) || Physics.Raycast (transform.position, -Vector3.up, _distToGround + 0.1f))
+			canJump = true;
+		return canJump;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		float distanceToPlayer = Vector3.Distance (transform.position, player.position);
-		if (distanceToPlayer < aggroRange && agent.isActiveAndEnabled && agent.isOnNavMesh)
-			agent.SetDestination (player.position);
-		else agent.SetDestination (origin);
+		Turning();
+		Movement();
+	}
+
+	void Movement()
+	{
+		float distanceToPlayer = Vector3.Distance (transform.position, _player.position);
+		_rigidbody.AddForce(transform.forward * 500f);
+
+		if (distanceToPlayer < aggroRange)
+		{
+			Vector3 movement = Vector3.right;
+			_destination = _player.position;
+		}
+		else if (distanceToPlayer > aggroRange)
+			_destination = _origin;
+
+	}
+
+	void Turning()
+	{
+		if (_destination != null){
+			if (Vector3.Distance(transform.position, _destination) > 0.1f)
+			{
+				Vector3 direction = new Vector3((_destination - transform.position).normalized.x, 0, 0);
+				Quaternion lookRotation = Quaternion.LookRotation(direction);
+				
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, 100f * Time.deltaTime);
+			}
+		}
+	}
+
+	void CheckPos()
+	{
+		if (transform.position.y < -100f)
+		{
+			destroyTimer -= Time.deltaTime;
+		}
+
+		if (destroyTimer < 0f)
+		{
+			Die ();
+		}
 	}
 
 	protected override void Die()

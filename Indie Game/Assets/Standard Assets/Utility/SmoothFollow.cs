@@ -11,7 +11,10 @@ namespace UnityStandardAssets.Utility
 		// The distance in the x-z plane to the target
 		[SerializeField]
 		private float distance = 10.0f;
-		private float targetLead = 0f;
+		public float TargetLead = 5f;
+		public float FollowSpeed = 15f;
+		public float FollowSpeedVert = 10f;
+		public float Height = 10f;
 
 		// Use this for initialization
 		void Start() { }
@@ -21,9 +24,9 @@ namespace UnityStandardAssets.Utility
 			if (!target)
 				return;
 
-			transform.position = target.position;
-			transform.position -= (Vector3.forward * distance) + (Vector3.right * targetLead);
-
+			Vector3 newPos = target.position - (Vector3.forward * distance) + (Vector3.right * TargetLead) + (Vector3.up * Height);
+			//transform.position = Vector3.MoveTowards(transform.position, newPos
+			transform.position = Vector3.MoveTowards(transform.position, newPos, Time.deltaTime * FollowSpeed);
 
 		}
 	}

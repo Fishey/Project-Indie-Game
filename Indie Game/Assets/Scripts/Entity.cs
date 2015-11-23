@@ -41,6 +41,9 @@ public abstract class Entity : MonoBehaviour
     {
         currentHealth += Modifier;
        
+		if (Modifier < 0 && GetComponent<ParticleSystem>())
+			GetComponent<ParticleSystem>().Play();
+
         if (currentHealth >= maxHealth)
         {
             currentHealth = maxHealth;
@@ -74,14 +77,14 @@ public abstract class Entity : MonoBehaviour
 			}
 		}
     }
-    public Vector3 GetPosition()
-    {
-        Vector3 tmp = transform.position;
-        return tmp;
-    }
+
     protected virtual void Die()
     {
     }
+
+	public virtual void Attack()
+	{
+	}
 
 
     // Update is called once per frame

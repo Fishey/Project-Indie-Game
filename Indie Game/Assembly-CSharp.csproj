@@ -47,12 +47,15 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\EnemyClass.cs" />
      <Compile Include="Assets\Scripts\Entity.cs" />
+     <Compile Include="Assets\Scripts\FlipTriggerScript.cs" />
      <Compile Include="Assets\Scripts\GravityScript.cs" />
+     <Compile Include="Assets\Scripts\HudScript.cs" />
+     <Compile Include="Assets\Scripts\LevelBuilder.cs" />
      <Compile Include="Assets\Scripts\PlayerClass.cs" />
      <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\ShurikenScript.cs" />
      <Compile Include="Assets\Scripts\WeaponScript.cs" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
-     <None Include="Assets\Standard Assets\Characters\ThirdPersonCharacter\ThirdPersonCharacterGuidelines.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
