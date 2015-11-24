@@ -4,7 +4,7 @@ using System.Collections;
 public class FlipTriggerScript : MonoBehaviour {
 
 	private GravityScript _worldGravityScript;
-	private bool _coolDown;
+	private float _coolDown = 0f;
 	// Use this for initialization
 	void Start () {
 		_worldGravityScript = GameObject.Find("World").GetComponent<GravityScript>();
@@ -12,7 +12,8 @@ public class FlipTriggerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (_coolDown > 0f)
+			_coolDown -= Time.deltaTime;
 	}
 
 	void OnCollisionEnter(Collision col)
@@ -21,10 +22,25 @@ public class FlipTriggerScript : MonoBehaviour {
 
 		if (col.collider.tag == "Shuriken" && col.gameObject.layer != 11)
 		{
-			Debug.Log("ye");
-			_worldGravityScript.Flip();
+			if (_coolDown <= 0f){
+				_worldGravityScript.Flip();
+				_coolDown = 2f;
+			}
 			col.gameObject.layer = 11;
 		}
 
+
+	}
+
+	void OnTriggerEnter(Collider col)
+	{
+		if (col.tag == "Weapon")
+		{
+			if (_coolDown <= 0f){
+				_worldGravityScript.Flip();
+				_coolDown = 2f;
+			}
+			Debug.Log("sword");
+		}
 	}
 }

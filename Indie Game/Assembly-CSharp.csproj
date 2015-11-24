@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\FlipTriggerScript.cs" />
      <Compile Include="Assets\Scripts\GravityScript.cs" />
      <Compile Include="Assets\Scripts\HudScript.cs" />
+     <Compile Include="Assets\Scripts\HurtBlockScript.cs" />
      <Compile Include="Assets\Scripts\LevelBuilder.cs" />
      <Compile Include="Assets\Scripts\PlayerClass.cs" />
      <Compile Include="Assets\Scripts\PlayerMovement.cs" />

@@ -36,7 +36,14 @@ public class PlayerClass : Entity
 
 	public int Shurikens{
 		get {return _shurikens;}
-		set {this._shurikens = value;
+		set {
+			if (value > _maxShurikens)
+				_shurikens = _maxShurikens;
+			else if (value < 0)
+				_shurikens = 0;
+			else 
+				this._shurikens = value;
+
 			Hud.ChangeShurikens(_maxShurikens, _shurikens);
 		}
 	}
