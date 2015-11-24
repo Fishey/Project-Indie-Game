@@ -12,7 +12,7 @@ public class EnemyClass : Entity {
 	public float Speed;
 	private float _distToGround;
 	private Transform _mainCam;
-	private CapsuleCollider _collider;
+	private MeshCollider _collider;
 
 	public float aggroRange;
 	
@@ -20,7 +20,7 @@ public class EnemyClass : Entity {
 	{
 		_player = GameObject.FindGameObjectWithTag ("Player").transform;
 		_origin = transform.position;
-		_collider = GetComponent<CapsuleCollider> ();
+		_collider = GetComponent<MeshCollider> ();
 		_rigidbody = GetComponent<Rigidbody>();
 		_mainCam = Camera.main.transform;
 		_distToGround = _collider.bounds.extents.y;

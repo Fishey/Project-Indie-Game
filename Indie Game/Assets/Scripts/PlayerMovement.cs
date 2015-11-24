@@ -184,10 +184,9 @@ public class PlayerMovement : MonoBehaviour
 		else if (horizontalspeed < 0) facingRight = false;
 
 
-		_rigidbody.AddForce(movement.normalized * _movementSpeed * Time.deltaTime);
+		_rigidbody.AddForce(movement.normalized * _movementSpeed * 2f * Time.deltaTime);
 
 		lastTimeMovementPressed = Time.time;
-
 
         if (_rigidbody.velocity.x > _maxSpeed) // Only limit x velocity so we don't affect jump/gravity
         {

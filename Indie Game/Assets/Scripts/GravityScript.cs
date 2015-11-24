@@ -11,7 +11,7 @@ public class GravityScript : MonoBehaviour {
 	private Transform _sun;
 	private EnemyClass[] _enemyScripts;
 	private bool _flipped = false;
-	private bool _flipInProgress = false;
+	private bool _done = false;
 
 	private Quaternion _qTo = Quaternion.identity;
 	private Quaternion _qToEnemy = Quaternion.identity;
@@ -38,7 +38,6 @@ public class GravityScript : MonoBehaviour {
 	public void Flip()
 	{
 		Physics.gravity = new Vector3(0, -Physics.gravity.y, 0);
-		_flipInProgress = true;
 		if (!_flipped){
 			_qTo = _qFlip;
 			_qToCamera = _qFlipCamera;
@@ -58,6 +57,7 @@ public class GravityScript : MonoBehaviour {
 		}
 		
 		_qToEnemy = _qTo;
+		_done = false;
 	}
 
 	void Update() {
@@ -68,19 +68,32 @@ public class GravityScript : MonoBehaviour {
 
 	void UpdateRotation()
 	{
-		foreach(EnemyClass e in _enemyScripts){
-			if (e)
-				e.transform.rotation = Quaternion.RotateTowards(e.transform.rotation, _qToEnemy, Time.deltaTime * speed);
-		}
-		
+
+		_done = UpdateRotationEnemy();
 		Camera.main.transform.rotation = Quaternion.RotateTowards(Camera.main.transform.rotation, _qToCamera, Time.deltaTime * speed);
 		_player.rotation = Quaternion.RotateTowards(_player.rotation, _qTo, Time.deltaTime * speed);
 		_sun.rotation = Quaternion.RotateTowards(_sun.rotation, _qToSun, Time.deltaTime * speed);
+
+		_done = (_player.rotation == _qTo && Camera.main.transform.rotation == _qToCamera && _qToSun != _sun.rotation);
+
+	}
+
+	bool UpdateRotationEnemy()
+	{
+		bool done = true;
+		foreach(EnemyClass e in _enemyScripts){
+			if (e)
+				e.transform.rotation = Quaternion.RotateTowards(e.transform.rotation, _qToEnemy, Time.deltaTime * speed);
+			if (e.transform.rotation != _qToEnemy)
+				done = false;
+		}
+
+		return done;
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
-		//if (_player.rotation != _qTo || Camera.main.transform.rotation != _qToCamera || _qToSun != _sun.rotation)
+		if (!_done)
 			UpdateRotation();
 	}
 }
