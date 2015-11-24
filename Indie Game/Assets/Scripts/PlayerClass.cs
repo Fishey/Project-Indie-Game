@@ -51,11 +51,15 @@ public class PlayerClass : Entity
     public override void ChangeEnergy(float Modifier)
     {
         base.ChangeEnergy(Modifier);
+		Hud.ChangeEnergy(maxEnergy, currentEnergy);
+
     }
 
     public override void ChangeHealth(float Modifier)
     {
         base.ChangeHealth(Modifier);
+		Hud.ChangeHealth(maxHealth, currentHealth);
+
     }
 
 	public override void Attack(){
@@ -106,7 +110,7 @@ public class PlayerClass : Entity
 
     void FixedUpdate()
     {
-        //Regen();
+        Regen();
 
     }
 
@@ -145,6 +149,7 @@ public class PlayerClass : Entity
         _playerMove = GetComponent<PlayerMovement>();
         _playerMove.SetOwner(this);
         _playerMove.SetMovementSpeed(movementSpeed);
+		saveCheckpoint(transform.position);
 		Hud = GameObject.Find("Hud").GetComponent<HudScript>();
     }
     

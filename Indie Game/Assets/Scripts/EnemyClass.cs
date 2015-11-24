@@ -3,16 +3,17 @@ using System.Collections;
 
 public class EnemyClass : Entity {
 
-	private Transform _player;
-	private Vector3 _origin;
-	private Vector3 _destination;
+	protected Transform _player;
+	protected Vector3 _origin;
+	protected Vector3 _destination;
 
-	private Rigidbody _rigidbody;
-	private float destroyTimer = 10f;
-	public float Speed;
-	private float _distToGround;
-	private Transform _mainCam;
-	private MeshCollider _collider;
+	protected Rigidbody _rigidbody;
+	protected float _destroyTimer = 10f;
+	protected float _distToGround;
+	private float _timeSinceAttack;
+	protected Transform _mainCam;
+	protected MeshCollider _collider;
+	public float Damage;
 
 	public float aggroRange;
 	
@@ -38,16 +39,17 @@ public class EnemyClass : Entity {
 	void Update () {
 		Turning();
 		Movement();
+		CheckPos();
+		_timeSinceAttack+= Time.deltaTime;
 	}
 
-	void Movement()
+	protected virtual void Movement()
 	{
 		float distanceToPlayer = Vector3.Distance (transform.position, _player.position);
 		_rigidbody.AddForce(transform.forward * 500f);
 
 		if (distanceToPlayer < aggroRange)
 		{
-			Vector3 movement = Vector3.right;
 			_destination = _player.position;
 		}
 		else if (distanceToPlayer > aggroRange)
@@ -55,7 +57,7 @@ public class EnemyClass : Entity {
 
 	}
 
-	void Turning()
+	protected virtual void Turning()
 	{
 		if (_destination != null){
 			if (Vector3.Distance(transform.position, _destination) > 0.1f)
@@ -63,21 +65,37 @@ public class EnemyClass : Entity {
 				Vector3 direction = new Vector3((_destination - transform.position).normalized.x, 0, 0);
 				Quaternion lookRotation = Quaternion.LookRotation(direction);
 				
-				transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, 100f * Time.deltaTime);
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, 100f * Time.deltaTime * movementSpeed);
 			}
 		}
 	}
 
 	void CheckPos()
 	{
-		if (transform.position.y < -100f)
+		if (transform.position.y < -1000f)
 		{
-			destroyTimer -= Time.deltaTime;
+			_destroyTimer -= Time.deltaTime;
 		}
 
-		if (destroyTimer < 0f)
+		if (_destroyTimer < 0f)
 		{
 			Die ();
+		}
+	}
+
+	public override void Attack ()
+	{
+		if ( attackSpeed != 0 && _timeSinceAttack > 2f / attackSpeed){
+			_timeSinceAttack = 0f;
+			_player.GetComponent<PlayerClass>().ChangeHealth(-Damage);
+		}
+
+	}
+
+	protected void OnCollisionEnter(Collision col)
+	{
+		if (col.collider.tag == "Player"){
+			Attack();
 		}
 	}
 

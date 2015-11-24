@@ -18,8 +18,6 @@ public class FlipTriggerScript : MonoBehaviour {
 
 	void OnCollisionEnter(Collision col)
 	{
-		Debug.Log(col.gameObject.layer);
-
 		if (col.collider.tag == "Shuriken" && col.gameObject.layer != 11)
 		{
 			if (_coolDown <= 0f){

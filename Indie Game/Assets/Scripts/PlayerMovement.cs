@@ -21,8 +21,10 @@ public class PlayerMovement : MonoBehaviour
     public MovementTypes mType;
 	public float jumpHeight = 25;
 	private bool facingRight = true;
+	private bool axisPressed;
 
-	private float lastTimeMovementPressed;
+	private float lastTimeMovementLeft;
+	private float lastTimeMovementRight;
 	
     //public GameObject inGameMenu;
     string horizontalRightString, horizontalLeftString, verticalRightString, verticalLeftString, fireString, jumpString, flipString, swingString;
@@ -38,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
 		_collider = GetComponent<MeshCollider> ();
 		setStrings ();
 		_distToGround = _collider.bounds.extents.y;
+		lastTimeMovementLeft = Time.time;
     }
 
 	private bool isGrounded() // Currently checks if the player is either on the floor or on the ceiling... that could cause problems later
@@ -155,23 +158,48 @@ public class PlayerMovement : MonoBehaviour
 	
 	void Movement()
     {
-		if (Input.GetAxisRaw(horizontalLeftString) == 1)
+
+		float horizontalDir = Input.GetAxisRaw(horizontalLeftString);
+		float verticalDir = Input.GetAxisRaw(verticalLeftString);
+
+		if (Mathf.Abs(horizontalDir) != 0)
 		{
-			if (Time.time - lastTimeMovementPressed < 0.2f){
-				Ray ray = new Ray(transform.position, mainCam.right);
-				
-				//dash
+			if (!axisPressed){
+				if (Time.time - lastTimeMovementLeft < .5f | Time.time - lastTimeMovementRight < .5f && _owner.Energy > 50){
+					_owner.ChangeEnergy(-50);
+					RaycastHit info;
+					if (Physics.Raycast(transform.position, mainCam.right * Input.GetAxisRaw(horizontalLeftString), out info, 10f))
+					{
+						Debug.Log("hit " + info.collider.gameObject.name);
+						transform.position = transform.position + mainCam.right * info.distance * horizontalDir;
+					}
+					else {
+						transform.position = transform.position + new Vector3(horizontalDir * mainCam.right.x * 10f, 0 , 0);
+					}
+
+				}
+				Debug.DrawLine(transform.position, transform.position + (-mainCam.right * 10f));
+
+				axisPressed = true;
+				if (horizontalDir < 0)
+					lastTimeMovementLeft = Time.time;
+				else if (horizontalDir > 0)
+					lastTimeMovementRight = Time.time;
 			}
+
+		}
+		else {
+			axisPressed = false;
 		}
         Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
         float horizontalspeed = 0f;
         float verticalspeed = 0f;
 			if ((screenPos.x >= Screen.width / 7) && (screenPos.x <= Screen.width - Screen.width / 7))
-				horizontalspeed = Input.GetAxisRaw (horizontalLeftString) * Time.deltaTime;
-			else if ((screenPos.x < Screen.width / 7) && (Input.GetAxisRaw (horizontalLeftString) * _movementSpeed * Time.deltaTime) > 0f)
-			horizontalspeed = Input.GetAxisRaw (horizontalLeftString) * Time.deltaTime;
-			else if ((screenPos.x > Screen.width - Screen.width / 7) && (Input.GetAxisRaw (horizontalLeftString) * _movementSpeed * Time.deltaTime) < 0f)
-			horizontalspeed = Input.GetAxisRaw (horizontalLeftString) * Time.deltaTime;
+				horizontalspeed = horizontalDir * Time.deltaTime;
+			else if ((screenPos.x < Screen.width / 7) && (horizontalDir * _movementSpeed * Time.deltaTime) > 0f)
+			horizontalspeed = horizontalDir * Time.deltaTime;
+			else if ((screenPos.x > Screen.width - Screen.width / 7) && (horizontalDir * _movementSpeed * Time.deltaTime) < 0f)
+			horizontalspeed = horizontalDir * Time.deltaTime;
 			
 			if ((screenPos.y >= Screen.height / 5) && (screenPos.y <= Screen.height - Screen.height / 5))
 				verticalspeed = Input.GetAxisRaw (verticalLeftString) * Time.deltaTime;
@@ -185,8 +213,6 @@ public class PlayerMovement : MonoBehaviour
 
 
 		_rigidbody.AddForce(movement.normalized * _movementSpeed * 2f * Time.deltaTime);
-
-		lastTimeMovementPressed = Time.time;
 
         if (_rigidbody.velocity.x > _maxSpeed) // Only limit x velocity so we don't affect jump/gravity
         {
@@ -227,7 +253,6 @@ public class PlayerMovement : MonoBehaviour
 		if (Input.GetButtonDown(fireString) && ready == true)
 		{
 			Vector3 cameraRight = Camera.main.transform.TransformDirection(Vector3.right);
-			Vector3 cameraUp = Camera.main.transform.TransformDirection(Vector3.up);
 			if (_owner.Shurikens > 0){
 				_owner.Shurikens--;
 

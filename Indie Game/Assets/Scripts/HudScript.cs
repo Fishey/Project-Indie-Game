@@ -18,12 +18,12 @@ public class HudScript : MonoBehaviour {
 		ShurikenImage.fillAmount = (float)current/max;
 	}
 
-	public void ChangeHealth(int max, int current)
+	public void ChangeHealth(float max, float current)
 	{
 		HealthImage.fillAmount = (float)current/max;
 	}
 
-	public void ChangeEnergy(int max, int current)
+	public void ChangeEnergy(float max, float current)
 	{
 		EnergyImage.fillAmount = (float)current/max;
 	}

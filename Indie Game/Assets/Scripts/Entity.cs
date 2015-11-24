@@ -41,8 +41,11 @@ public abstract class Entity : MonoBehaviour
     {
         currentHealth += Modifier;
        
-		if (Modifier < 0 && GetComponent<ParticleSystem>())
+		if (Modifier < 0 && GetComponent<ParticleSystem>()){
+			GetComponent<Rigidbody>().AddForce((transform.up * 2f) + (transform.forward * 2f));
 			GetComponent<ParticleSystem>().Play();
+
+		}
 
         if (currentHealth >= maxHealth)
         {
@@ -102,7 +105,6 @@ public abstract class Entity : MonoBehaviour
         time = time + Time.deltaTime;
         if (time >= 2)
         {
-            regenerateHealth();
             regenerateEnergy();
             time = 0;
         }
