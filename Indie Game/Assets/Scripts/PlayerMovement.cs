@@ -138,7 +138,6 @@ public class PlayerMovement : MonoBehaviour
 
 		if (Input.GetButtonDown(jumpString) && isGrounded())
 		{
-			Debug.Log("yes");
 			jumping = true;
 		}
 
@@ -150,11 +149,11 @@ public class PlayerMovement : MonoBehaviour
 	}
 	void FixedUpdate()
 	{
-		dir = Movement();
-		Aim(dir);
+		Movement();
+		Aim();
 	}
 	
-	float Movement()
+	void Movement()
     {
 		if (Input.GetAxisRaw(horizontalLeftString) == 1)
 		{
@@ -183,8 +182,6 @@ public class PlayerMovement : MonoBehaviour
 		Vector3 movement = horizontalspeed * mainCam.right;
 		if (horizontalspeed > 0) facingRight = true;
 		else if (horizontalspeed < 0) facingRight = false;
-		Debug.Log(movement.normalized * _movementSpeed * Time.deltaTime);
-
 
 
 		_rigidbody.AddForce(movement.normalized * _movementSpeed * Time.deltaTime);
@@ -224,10 +221,9 @@ public class PlayerMovement : MonoBehaviour
 		{
 			_rigidbody.velocity = new Vector3(_rigidbody.velocity.x, Mathf.Abs(jumpHeight*transform.up.y), _rigidbody.velocity.z);
 		}
-		return horizontalspeed;
     }
 
-    void Aim(float direction)
+    void Aim()
     {
 		if (Input.GetButtonDown(fireString) && ready == true)
 		{
@@ -244,7 +240,9 @@ public class PlayerMovement : MonoBehaviour
 					_rigidbody.AddForce(new Vector3(_movementSpeed * -cameraRight.x * Time.deltaTime * 50f,0, 0)); 
 
 					//Throw the shuriken
-					shuriken.transform.rotation = Quaternion.LookRotation(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+					Vector3 oldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+					Vector3 newPoint = new Vector3(oldPoint.x, oldPoint.y, 0);
+					shuriken.transform.LookAt(newPoint);
 
 					shuriken.GetComponent<Rigidbody>().AddForce(new Vector3(2000 * cameraRight.x, 0, 0), ForceMode.Force);
 				}
@@ -253,7 +251,7 @@ public class PlayerMovement : MonoBehaviour
 					_rigidbody.AddForce(new Vector3(_movementSpeed * cameraRight.x * Time.deltaTime * 50f,0 ,0)); 
 
 					//Throw the shuriken
-					shuriken.transform.rotation = Quaternion.LookRotation(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+					//shuriken.transform.rotation = Quaternion.LookRotation(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 					shuriken.GetComponent<Rigidbody>().AddForce(new Vector3(-2000 * cameraRight.x, 0, 0), ForceMode.Force);
 				}
 				ready = false;
