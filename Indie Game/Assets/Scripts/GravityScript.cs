@@ -57,6 +57,7 @@ public class GravityScript : MonoBehaviour {
 		}
 		
 		_qToEnemy = _qTo;
+		//_qTo.y = _player.rotation.y;
 		_done = false;
 	}
 
@@ -81,13 +82,14 @@ public class GravityScript : MonoBehaviour {
 	bool UpdateRotationEnemy()
 	{
 		bool done = true;
+		/*
 		foreach(EnemyClass e in _enemyScripts){
 			if (e)
 				e.transform.rotation = Quaternion.RotateTowards(e.transform.rotation, _qToEnemy, Time.deltaTime * speed);
 			if (e.transform.rotation != _qToEnemy)
 				done = false;
 		}
-
+		*/ // For now we just have flying enemies
 		return done;
 	}
 	

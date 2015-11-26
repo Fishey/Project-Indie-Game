@@ -45,20 +45,27 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\CheckpointScript.cs" />
-     <Compile Include="Assets\Scripts\EnemyClass.cs" />
-     <Compile Include="Assets\Scripts\Entity.cs" />
-     <Compile Include="Assets\Scripts\FlipTriggerScript.cs" />
-     <Compile Include="Assets\Scripts\FlyingEnemyClass.cs" />
+     <Compile Include="Assets\Scripts\Blocks\CheckpointScript.cs" />
+     <Compile Include="Assets\Scripts\Blocks\FlipTriggerScript.cs" />
+     <Compile Include="Assets\Scripts\Blocks\HurtBlockScript.cs" />
+     <Compile Include="Assets\Scripts\Blocks\LevelSwitchScript.cs" />
+     <Compile Include="Assets\Scripts\Blocks\PickUpScript.cs" />
+     <Compile Include="Assets\Scripts\Blocks\TextAreaScript.cs" />
+     <Compile Include="Assets\Scripts\Blocks\TextPointScript.cs" />
+     <Compile Include="Assets\Scripts\Entity\EnemyClass.cs" />
+     <Compile Include="Assets\Scripts\Entity\Entity.cs" />
+     <Compile Include="Assets\Scripts\Entity\FlyingEnemyClass.cs" />
+     <Compile Include="Assets\Scripts\Entity\PlayerClass.cs" />
+     <Compile Include="Assets\Scripts\Entity\PlayerMovement.cs" />
      <Compile Include="Assets\Scripts\GravityScript.cs" />
      <Compile Include="Assets\Scripts\HudScript.cs" />
-     <Compile Include="Assets\Scripts\HurtBlockScript.cs" />
      <Compile Include="Assets\Scripts\LevelBuilder.cs" />
-     <Compile Include="Assets\Scripts\PlayerClass.cs" />
-     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\PlatformCollisionScript.cs" />
      <Compile Include="Assets\Scripts\ShurikenScript.cs" />
+     <Compile Include="Assets\Scripts\SmoothFollow.cs" />
      <Compile Include="Assets\Scripts\WeaponScript.cs" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
+     <None Include="Assets\Shaders\Plasma.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
