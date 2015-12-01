@@ -83,6 +83,14 @@ public class HudScript : MonoBehaviour {
 		Tutorial.stop (FMOD.Studio.STOP_MODE.IMMEDIATE);	
 		Application.LoadLevel(0);
 	}
+
+	public void ReadingScroll(bool reading)
+	{
+		if (reading)
+			Tutorial.setParameterValue("Voice-over", 1f);
+		else 
+			Tutorial.setParameterValue("Voice-over", 0f);
+	}
 	
 	public void VolumeControl (float vol) {
 		AudioListener.volume = vol;

@@ -17,7 +17,6 @@ public class FlyingEnemyClass : EnemyClass {
 			_rigidbody.AddForce(transform.up * 25f);
 		}
 
-
 		if (distanceToPlayer < aggroRange)
 		{
 			_destination = _player.position;

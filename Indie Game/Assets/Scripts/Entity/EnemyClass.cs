@@ -10,7 +10,7 @@ public class EnemyClass : Entity {
 	protected Rigidbody _rigidbody;
 	protected float _destroyTimer = 10f;
 	protected float _distToGround;
-	private float _timeSinceAttack;
+	protected float _timeSinceAttack;
 	protected Transform _mainCam;
 	protected MeshCollider _collider;
 	public float Damage;
@@ -34,7 +34,7 @@ public class EnemyClass : Entity {
 		_rigidbody = GetComponent<Rigidbody>();
 		_mainCam = Camera.main.transform;
 		_distToGround = _collider.bounds.extents.y;
-		worldGravity = GameObject.Find("World").GetComponent<GravityScript>();
+		WorldGravity = GameObject.Find("World").GetComponent<GravityScript>();
 	}
 
 	public override void ChangeHealth(float Modifier)
@@ -125,7 +125,12 @@ public class EnemyClass : Entity {
 
 	protected override void Die()
 	{
-		gameObject.SetActive(false);
+		if (Alive){
+			//FMOD_StudioSystem.instance.PlayOneShot("event:/EnemyDeath", transform.position);
+			Alive = false;
+			gameObject.SetActive(false);
+		}
+
 	}
 
 	public void Respawn()

@@ -23,31 +23,21 @@ public class PlayerClass : Entity
 
 	private Vector3 _lastCheckpoint;
 
-   public int Score
+	void Start()
 	{
-		get { return this._score;}
-		set { this._score += value;}
+		_maxShurikens = _shurikens;
+		OwnedWeapons.Add (transform.GetComponentInChildren<WeaponScript> ());
+		CurrentWeapon = OwnedWeapons [0];
+		CurrentWeapon.Damage = 25;
+		_playerMove = GetComponent<PlayerMovement>();
+		_playerMove.SetOwner(this);
+		_playerMove.SetMovementSpeed(movementSpeed);
+		saveCheckpoint(transform.position);
+		Hud = GameObject.Find("Hud").GetComponent<HudScript>();
+		WorldGravity = GameObject.Find("World").GetComponent<GravityScript>();
 	}
+	
 
-	public int Money
-	{
-		get { return this._money;}
-		set { this._money += value;}
-	}
-
-	public int Shurikens{
-		get {return _shurikens;}
-		set {
-			if (value > _maxShurikens)
-				_shurikens = _maxShurikens;
-			else if (value < 0)
-				_shurikens = 0;
-			else 
-				this._shurikens = value;
-
-			Hud.ChangeShurikens(_maxShurikens, _shurikens);
-		}
-	}
 	
     public override void ChangeEnergy(float Modifier)
     {
@@ -60,20 +50,16 @@ public class PlayerClass : Entity
     {
         base.ChangeHealth(Modifier);
 		Hud.ChangeHealth(maxHealth, currentHealth);
+		if (Alive && Modifier < 0)
+		FMOD_StudioSystem.instance.PlayOneShot("event:/PlayerGetHit", transform.position);
 
     }
 
 	public override void Attack(){
 		if (!CurrentWeapon.transform.parent.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("SwingTest")){
 			FMOD_StudioSystem.instance.PlayOneShot("event:/SwordSwing", transform.position);
-
 			CurrentWeapon.transform.parent.GetComponent<Animator>().Play("SwingTest");
 		}
-	}
-	
-	public void AddXp(int expAdded)
-	{
-		Xp += expAdded;
 	}
 
 	public int Xp // Amount of experience player has
@@ -101,6 +87,32 @@ public class PlayerClass : Entity
 			if (CurrentWeapon != null) CurrentWeapon.AttackSpeed = value;
 		}
 
+	}
+
+	public int Score
+	{
+		get { return this._score;}
+		set { this._score += value;}
+	}
+	
+	public int Money
+	{
+		get { return this._money;}
+		set { this._money += value;}
+	}
+	
+	public int Shurikens{
+		get {return _shurikens;}
+		set {
+			if (value > _maxShurikens)
+				_shurikens = _maxShurikens;
+			else if (value < 0)
+				_shurikens = 0;
+			else 
+				this._shurikens = value;
+			
+			Hud.ChangeShurikens(_maxShurikens, _shurikens);
+		}
 	}
 
     public void SetStats(int moveSpeed, float attackSpeed)
@@ -156,23 +168,12 @@ public class PlayerClass : Entity
 	private IEnumerator Respawn()
 	{
 		yield return new WaitForSeconds(5f);
-		ResetStats();
 		Alive = true;
+		ResetStats();
 		GameObject.Find("World").GetComponent<LevelBuilder>().RespawnEnemies();
 		transform.position = _lastCheckpoint;
 	}
-    void Start()
-    {
-		_maxShurikens = _shurikens;
-		OwnedWeapons.Add (transform.GetComponentInChildren<WeaponScript> ());
-		CurrentWeapon = OwnedWeapons [0];
-		CurrentWeapon.Damage = 25;
-        _playerMove = GetComponent<PlayerMovement>();
-        _playerMove.SetOwner(this);
-        _playerMove.SetMovementSpeed(movementSpeed);
-		saveCheckpoint(transform.position);
-		Hud = GameObject.Find("Hud").GetComponent<HudScript>();
-    }
+
     
 	public float Energy {
 		get {return this.currentEnergy;}

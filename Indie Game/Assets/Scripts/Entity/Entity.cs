@@ -26,7 +26,7 @@ public abstract class Entity : MonoBehaviour
 	public bool Alive = true;
 
 
-	protected GravityScript worldGravity;
+	public GravityScript WorldGravity;
 
     public virtual void ChangeEnergy(float Modifier)
     {
@@ -52,23 +52,25 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void ChangeHealth(float Modifier)
     {
-        currentHealth += Modifier;
-       
-		if (Modifier < 0 && GetComponent<ParticleSystem>()){
-			_knockBack();
-			GetComponent<ParticleSystem>().Play();
+		if (Alive){
+	        currentHealth += Modifier;
+	       
+			if (Modifier < 0 && GetComponent<ParticleSystem>()){
+				_knockBack();
+				GetComponent<ParticleSystem>().Play();
 
+			}
+
+	        if (currentHealth >= maxHealth)
+	        {
+	            currentHealth = maxHealth;
+	        }
+	        if (currentHealth <= 0)
+	        {
+	            currentHealth = 0;
+	            Die();
+	        }
 		}
-
-        if (currentHealth >= maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
-        if (currentHealth <= 0)
-        {
-            currentHealth = 0;
-            Die();
-        }
     }
 
     public float Health

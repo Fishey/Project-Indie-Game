@@ -41,6 +41,7 @@ public class ShurikenScript : WeaponScript {
 
 		if (col.collider.tag == "Player" && gameObject.layer == 11)
 		{
+			FMOD_StudioSystem.instance.PlayOneShot("event:/ShurikenPickup", transform.position);
 			_player.Shurikens++;
 			Destroy(gameObject);
 		}

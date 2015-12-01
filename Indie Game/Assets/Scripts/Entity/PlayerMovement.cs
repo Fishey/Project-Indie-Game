@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityStandardAssets.Utility;
 
 public enum MovementTypes { Keyboard, Xbox }
@@ -38,7 +38,8 @@ public class PlayerMovement : MonoBehaviour
 		setStrings ();
 		_distToGround = _collider.bounds.extents.y;
 		lastTimeMovementLeft = Time.time;
-    }
+
+	}
 
 	private bool isGrounded() // Currently checks if the player is either on the floor or on the ceiling... that could cause problems later
 	{
@@ -152,8 +153,12 @@ public class PlayerMovement : MonoBehaviour
 	}
 	void FixedUpdate()
 	{
-		Movement();
-		Aim();
+		if (_owner.Alive){	
+			if (_owner.WorldGravity.Done){
+				Movement();
+			}
+			Aim();
+		}
 	}
 
 	void Dash()
@@ -189,7 +194,7 @@ public class PlayerMovement : MonoBehaviour
 					smoke.transform.position = transform.position;
 
 					RaycastHit info;
-					if (Physics.Raycast(transform.position, mainCam.right * Input.GetAxisRaw(horizontalLeftString), out info, 10f))
+					if (Physics.Raycast(transform.position, mainCam.right * horizontalDir, out info, 10f))
 					{
 						transform.position = transform.position + new Vector3(horizontalDir * mainCam.right.x * info.distance, 0 , 0);					}
 					else {
