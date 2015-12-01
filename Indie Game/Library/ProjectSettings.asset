@@ -12,14 +12,14 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: The Best
   productName: Indie Game
-  defaultCursor: {fileID: 2800000, guid: 99ea6d5b78cb2674582935e2b11b0d76, type: 3}
+  defaultCursor: {fileID: 0}
   cursorHotspot: {x: 20, y: 20}
   m_ShowUnitySplashScreen: 1
   defaultScreenWidth: 1024
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
-  m_RenderingPath: 1
+  m_RenderingPath: 3
   m_MobileRenderingPath: 1
   m_ActiveColorSpace: 0
   m_MTRendering: 1
@@ -107,7 +107,7 @@ PlayerSettings:
   CreateWallpaper: 0
   APKExpansionFiles: 0
   preloadShaders: 0
-  StripUnusedMeshComponents: 0
+  StripUnusedMeshComponents: 1
   VertexChannelCompressionMask:
     serializedVersion: 2
     m_Bits: 238

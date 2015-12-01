@@ -57,20 +57,29 @@
      <Compile Include="Assets\Scripts\Entity\FlyingEnemyClass.cs" />
      <Compile Include="Assets\Scripts\Entity\PlayerClass.cs" />
      <Compile Include="Assets\Scripts\Entity\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\FMODAudioManager.cs" />
      <Compile Include="Assets\Scripts\GravityScript.cs" />
      <Compile Include="Assets\Scripts\HudScript.cs" />
      <Compile Include="Assets\Scripts\LevelBuilder.cs" />
-     <Compile Include="Assets\Scripts\PlatformCollisionScript.cs" />
+     <Compile Include="Assets\Scripts\MenuScript.cs" />
      <Compile Include="Assets\Scripts\ShurikenScript.cs" />
      <Compile Include="Assets\Scripts\SmoothFollow.cs" />
      <Compile Include="Assets\Scripts\WeaponScript.cs" />
+     <None Include="Assets\Build\GUIDs.txt" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\Shaders\Plasma.shader" />
+     <None Include="Assets\StreamingAssets\FMOD_bank_list.txt" />
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/Mono.Cecil.dll</HintPath>

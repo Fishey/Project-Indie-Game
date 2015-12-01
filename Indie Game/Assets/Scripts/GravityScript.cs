@@ -9,9 +9,10 @@ public class GravityScript : MonoBehaviour {
 	private Transform _player;
 	private Transform _enemies;
 	private Transform _sun;
-	private EnemyClass[] _enemyScripts;
+	private FlyingEnemyClass[] _flyingEnemyScripts;
 	private bool _flipped = false;
-	private bool _done = false;
+	public bool Done = false;
+	public bool Debugging = true;
 
 	private Quaternion _qTo = Quaternion.identity;
 	private Quaternion _qToEnemy = Quaternion.identity;
@@ -31,19 +32,20 @@ public class GravityScript : MonoBehaviour {
 		_sun = GameObject.Find("Sun").transform;
 		_player = GameObject.FindGameObjectWithTag ("Player").transform;
 		_enemies = GameObject.Find("Enemies").transform;
-		_enemyScripts = new EnemyClass[]{};
+		_flyingEnemyScripts = new FlyingEnemyClass[]{};
 		cameraFollowScript = Camera.main.GetComponent<SmoothFollow>();
 	}
 
 	public void Flip()
 	{
+		_enemies = GameObject.Find("Enemies").transform;
 		Physics.gravity = new Vector3(0, -Physics.gravity.y, 0);
 		if (!_flipped){
 			_qTo = _qFlip;
 			_qToCamera = _qFlipCamera;
 			_qToSun = _qFlipSun;
 			_flipped = true;
-			_enemyScripts = _enemies.GetComponentsInChildren<EnemyClass>();
+			_flyingEnemyScripts = _enemies.GetComponentsInChildren<FlyingEnemyClass>();
 			cameraFollowScript.Height -= cameraFollowScript.Height;
 		}
 		else {
@@ -51,14 +53,15 @@ public class GravityScript : MonoBehaviour {
 			_qToCamera = Quaternion.identity;
 			_qToSun = Quaternion.Euler(45,0,0);
 			_flipped = false;
-			_enemyScripts = _enemies.GetComponentsInChildren<EnemyClass>();
+			_flyingEnemyScripts = _enemies.GetComponentsInChildren<FlyingEnemyClass>();
 			cameraFollowScript.Height -= cameraFollowScript.Height;
 			
 		}
 		
 		_qToEnemy = _qTo;
 		//_qTo.y = _player.rotation.y;
-		_done = false;
+		Done = false;
+		UpdateRotationEnemy();
 	}
 
 	void Update() {
@@ -70,32 +73,28 @@ public class GravityScript : MonoBehaviour {
 	void UpdateRotation()
 	{
 
-		_done = UpdateRotationEnemy();
 		Camera.main.transform.rotation = Quaternion.RotateTowards(Camera.main.transform.rotation, _qToCamera, Time.deltaTime * speed);
 		_player.rotation = Quaternion.RotateTowards(_player.rotation, _qTo, Time.deltaTime * speed);
 		_sun.rotation = Quaternion.RotateTowards(_sun.rotation, _qToSun, Time.deltaTime * speed);
 
-		_done = (_player.rotation == _qTo && Camera.main.transform.rotation == _qToCamera && _qToSun != _sun.rotation);
+		if (Debugging)
+		Debug.Log(_player.rotation.eulerAngles + " <<PLAYER TARGET>> " + _qTo.eulerAngles + " Done = " + (_player.rotation == _qTo));
+
+		Done = (_player.rotation.eulerAngles == _qTo.eulerAngles);
 
 	}
 
-	bool UpdateRotationEnemy()
+	void UpdateRotationEnemy()
 	{
-		bool done = true;
-		/*
-		foreach(EnemyClass e in _enemyScripts){
-			if (e)
-				e.transform.rotation = Quaternion.RotateTowards(e.transform.rotation, _qToEnemy, Time.deltaTime * speed);
-			if (e.transform.rotation != _qToEnemy)
-				done = false;
+		foreach(FlyingEnemyClass e in _flyingEnemyScripts){
+			e.Flipped = _flipped;
 		}
-		*/ // For now we just have flying enemies
-		return done;
+		 // For now we just have flying enemies
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
-		if (!_done)
+		if (!Done)
 			UpdateRotation();
 	}
 }

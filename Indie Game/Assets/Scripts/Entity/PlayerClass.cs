@@ -19,6 +19,7 @@ public class PlayerClass : Entity
 	private int _maxShurikens = 5;
 	private int _level = 1;
 	private int _score = 0;
+	private int _damage = 20;
 
 	private Vector3 _lastCheckpoint;
 
@@ -63,7 +64,11 @@ public class PlayerClass : Entity
     }
 
 	public override void Attack(){
-		CurrentWeapon.transform.parent.GetComponent<Animator>().Play("SwingTest");
+		if (!CurrentWeapon.transform.parent.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("SwingTest")){
+			FMOD_StudioSystem.instance.PlayOneShot("event:/SwordSwing", transform.position);
+
+			CurrentWeapon.transform.parent.GetComponent<Animator>().Play("SwingTest");
+		}
 	}
 	
 	public void AddXp(int expAdded)
@@ -108,19 +113,18 @@ public class PlayerClass : Entity
         _playerMove.SetMovementSpeed(movementSpeed);
 		ChangeHealth(maxHealth-currentHealth);
 		ChangeEnergy(maxEnergy-currentEnergy);
+		Shurikens = _maxShurikens;
+		GetComponent<Rigidbody>().isKinematic = true;
 		GetComponent<Rigidbody>().velocity = Vector3.zero;
-		Debug.Log("called");
+		GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+		GetComponent<Rigidbody>().isKinematic = false;
     }
 
     void FixedUpdate()
     {
+		if (Alive)
         Regen(4f);
 
-    }
-
-    public void SwitchWeapon()
-    {
-        
     }
 
     void levelUp()
@@ -128,8 +132,9 @@ public class PlayerClass : Entity
         _level++;
         _xp = 0;
         attackSpeed += 0.05f;
-        maxHealth += 5;
-        maxEnergy += 1;
+        maxHealth += 10;
+        maxEnergy += 20;
+		CurrentWeapon.Damage+= 10;
         ResetStats();
         XpToNextlvl *= 1.5f;
     }
@@ -141,10 +146,21 @@ public class PlayerClass : Entity
   
     protected override void Die()
     {
-		transform.position = _lastCheckpoint;
-		ResetStats();
-		GameObject.Find("World").GetComponent<LevelBuilder>().RespawnEnemies();
+		if (Alive){
+			FMOD_StudioSystem.instance.PlayOneShot("event:/PlayerDeath", transform.position);
+			Alive = false;
+			StartCoroutine("Respawn");
+		}
     }
+
+	private IEnumerator Respawn()
+	{
+		yield return new WaitForSeconds(5f);
+		ResetStats();
+		Alive = true;
+		GameObject.Find("World").GetComponent<LevelBuilder>().RespawnEnemies();
+		transform.position = _lastCheckpoint;
+	}
     void Start()
     {
 		_maxShurikens = _shurikens;

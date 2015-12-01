@@ -6,7 +6,6 @@ public enum MovementTypes { Keyboard, Xbox }
 
 public class PlayerMovement : MonoBehaviour
 {
-
     private Rigidbody _rigidbody;
 	private MeshCollider _collider;
     private int _movementSpeed = 1000;
@@ -131,20 +130,23 @@ public class PlayerMovement : MonoBehaviour
 
 	void Update()
 	{
-		utime += Time.deltaTime;
-		
-		if (utime >= 1) {
-			ready = true;
-		}
+		if (_owner.Alive){
+			utime += Time.deltaTime;
+			
+			if (utime >= 1) {
+				ready = true;
+			}
 
-		if (Input.GetButtonDown(jumpString) && isGrounded())
-		{
-			jumping = true;
-		}
+			if (Input.GetButtonDown(jumpString) && isGrounded())
+			{
+				jumping = true;
+			}
 
-		if (Input.GetButtonDown(swingString))
-		{
-			_owner.Attack();
+			if (Input.GetButtonDown(swingString))
+			{
+				_owner.Attack();
+
+			}
 		}
 
 	}
@@ -169,27 +171,47 @@ public class PlayerMovement : MonoBehaviour
 		if (Mathf.Abs(horizontalDir) != 0)
 		{
 			if (!axisPressed){
-				if (Time.time - lastTimeMovementLeft < .5f | Time.time - lastTimeMovementRight < .5f && _owner.Energy > 50){
-					_owner.ChangeEnergy(-50);
+				bool dashing = false;
+				if (horizontalDir > 0 && Time.time - lastTimeMovementRight < .5f)
+				{
+					dashing = true;
+				}
+				else if (horizontalDir < 0 && Time.time - lastTimeMovementLeft < .5f)
+				{
+					dashing = true;
+				}
+
+				if (_owner.Energy > 60 && dashing){
+					_owner.ChangeEnergy(-60);
 					GameObject smoke = Instantiate(Resources.Load("Particles/Smoke_Dash_Particle", typeof(GameObject))) as GameObject;
+					FMOD_StudioSystem.instance.PlayOneShot("event:/DashCena", transform.position);
+
 					smoke.transform.position = transform.position;
+
 					RaycastHit info;
 					if (Physics.Raycast(transform.position, mainCam.right * Input.GetAxisRaw(horizontalLeftString), out info, 10f))
 					{
-						_rigidbody.AddForce(mainCam.right * info.distance * 1000f * horizontalDir, ForceMode.Impulse);
-					}
+						transform.position = transform.position + new Vector3(horizontalDir * mainCam.right.x * info.distance, 0 , 0);					}
 					else {
 						transform.position = transform.position + new Vector3(horizontalDir * mainCam.right.x * 10f, 0 , 0);
 					}
+
+					GetComponent<Rigidbody>().isKinematic = true;
+					GetComponent<Rigidbody>().velocity = Vector3.zero;
+					GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+					GetComponent<Rigidbody>().isKinematic = false;
 
 				}
 				axisPressed = true;
 				if (horizontalDir < 0){
 					lastTimeMovementLeft = Time.time;
+					lastTimeMovementRight -= Time.time;
 				}
 
 				else if (horizontalDir > 0){
 					lastTimeMovementRight = Time.time;
+					lastTimeMovementLeft -= Time.time;
+
 				}
 
 			}
@@ -249,6 +271,7 @@ public class PlayerMovement : MonoBehaviour
 		if (jumping && isGrounded())
 		{
 			_rigidbody.velocity += transform.up*jumpHeight;
+			FMOD_StudioSystem.instance.PlayOneShot("event:/Jump", transform.position);
 			jumping = false;
 		}
 
@@ -271,6 +294,7 @@ public class PlayerMovement : MonoBehaviour
 				Vector3 newpos = ray.origin + (ray.direction * Camera.main.GetComponent<SmoothFollow>().distance);
 				Vector3 dir = newpos - transform.position;
 				dir.Normalize();
+				FMOD_StudioSystem.instance.PlayOneShot("event:/ShurikenThrow", transform.position);
 
 				shuriken.GetComponent<Rigidbody>().AddForce(dir * (1000f + 100 *_rigidbody.velocity.magnitude), ForceMode.Force); // Throw Shuriken
 				_rigidbody.AddForce(new Vector3(-dir.x * 10000f,0 ,0)); //Knockback Player

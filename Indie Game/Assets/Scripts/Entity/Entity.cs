@@ -23,6 +23,11 @@ public abstract class Entity : MonoBehaviour
     [SerializeField]
     protected float currentEnergy = 100;
 
+	public bool Alive = true;
+
+
+	protected GravityScript worldGravity;
+
     public virtual void ChangeEnergy(float Modifier)
     {
         currentEnergy += Modifier;
@@ -38,11 +43,11 @@ public abstract class Entity : MonoBehaviour
 		}
     }
 
-	private void _knockBack()
+	protected void _knockBack()
 	{
 		Transform mainCam = transform;
 		Vector3 pos = transform.position - new Vector3(0, 2 * mainCam.up.y, 0) + new Vector3(2 * mainCam.right.x, 0, 0);
-		GetComponent<Rigidbody>().AddExplosionForce(50000f, pos, 25f);
+		GetComponent<Rigidbody>().AddExplosionForce(25000f, pos, 25f);
 	}
 
     public virtual void ChangeHealth(float Modifier)

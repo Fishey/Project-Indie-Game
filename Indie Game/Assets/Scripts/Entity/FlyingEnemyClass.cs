@@ -6,7 +6,7 @@ public class FlyingEnemyClass : EnemyClass {
 	override protected void Movement()
 	{
 		float distanceToPlayer = Vector3.Distance (transform.position, _player.position);
-		_rigidbody.AddForce(transform.forward * 250f);
+		_rigidbody.AddForce(transform.forward * 250f * movementSpeed);
 
 		if (_rigidbody.velocity.magnitude > 2)
 		{
@@ -14,7 +14,7 @@ public class FlyingEnemyClass : EnemyClass {
 		}
 		if (_rigidbody.velocity.magnitude < 0.1f)
 		{
-			_rigidbody.AddForce(transform.up * 50f);
+			_rigidbody.AddForce(transform.up * 25f);
 		}
 
 
@@ -33,7 +33,8 @@ public class FlyingEnemyClass : EnemyClass {
 			{
 				Vector3 direction = new Vector3((_destination - transform.position).normalized.x, (_destination - transform.position).normalized.y, 0);
 				Quaternion lookRotation = Quaternion.LookRotation(direction);
-
+				if (_flip)
+					lookRotation *= Quaternion.Euler(0,0,180);
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, 100f * Time.deltaTime);
 			}
 		}

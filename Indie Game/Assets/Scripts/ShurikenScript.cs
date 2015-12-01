@@ -6,11 +6,13 @@ public class ShurikenScript : WeaponScript {
 
 	private bool hit = false;
 	private float lifeTime = 10.0f;
+	public float Damage = 20;
 	private PlayerClass _player;
 
 	// Use this for initialization
 	void Start () {
 		_player = GameObject.Find("Player").GetComponent<PlayerClass>();
+
 	}
 	
 	// Update is called once per frame

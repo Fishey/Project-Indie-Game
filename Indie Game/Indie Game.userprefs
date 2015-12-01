@@ -1,17 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Entity\PlayerMovement.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GravityScript.cs">
     <Files>
-      <File FileName="Assets\Scripts\Blocks\TextAreaScript.cs" Line="39" Column="16" />
-      <File FileName="Assets\Scripts\Blocks\FlipTriggerScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\PlatformCollisionScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\LevelBuilder.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\SmoothFollow.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GravityScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Blocks\TextPointScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HudScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Blocks\LevelSwitchScript.cs" Line="25" Column="3" />
-      <File FileName="Assets\Scripts\Entity\PlayerMovement.cs" Line="263" Column="13" />
+      <File FileName="Assets\Scripts\GravityScript.cs" Line="83" Column="59" />
+      <File FileName="Assets\Scripts\Entity\FlyingEnemyClass.cs" Line="6" Column="1" />
+      <File FileName="Assets\Scripts\Entity\Entity.cs" Line="27" Column="2" />
+      <File FileName="Assets\Scripts\Entity\EnemyClass.cs" Line="44" Column="21" />
+      <File FileName="Assets\Scripts\Entity\PlayerClass.cs" Line="20" Column="25" />
+      <File FileName="Assets\Scripts\Blocks\PickUpScript.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Entity\PlayerMovement.cs" Line="187" Column="61" />
+      <File FileName="Assets\Scripts\Blocks\LevelSwitchScript.cs" Line="17" Column="56" />
+      <File FileName="Assets\Scripts\HudScript.cs" Line="60" Column="25" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

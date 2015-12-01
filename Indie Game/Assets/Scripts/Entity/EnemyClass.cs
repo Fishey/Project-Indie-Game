@@ -16,6 +16,15 @@ public class EnemyClass : Entity {
 	public float Damage;
 
 	public float aggroRange;
+	[SerializeField]
+	protected bool _flip = false;
+	
+	public bool Flipped
+	{
+		get {return this._flip;}
+		set {this._flip = value;}
+	}
+
 	
 	void Start()
 	{
@@ -25,6 +34,14 @@ public class EnemyClass : Entity {
 		_rigidbody = GetComponent<Rigidbody>();
 		_mainCam = Camera.main.transform;
 		_distToGround = _collider.bounds.extents.y;
+		worldGravity = GameObject.Find("World").GetComponent<GravityScript>();
+	}
+
+	public override void ChangeHealth(float Modifier)
+	{
+		base.ChangeHealth(Modifier);
+		if (Modifier < 0)
+			FMOD_StudioSystem.instance.PlayOneShot("event:/EnemyHit", transform.position);
 	}
 
 	private bool isGrounded()
@@ -93,6 +110,13 @@ public class EnemyClass : Entity {
 	}
 
 	protected void OnCollisionEnter(Collision col)
+	{
+		if (col.collider.tag == "Player"){
+			Attack();
+		}
+	}
+
+	protected void OnCollisionStay(Collision col)
 	{
 		if (col.collider.tag == "Player"){
 			Attack();

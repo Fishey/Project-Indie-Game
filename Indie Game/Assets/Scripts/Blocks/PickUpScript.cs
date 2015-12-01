@@ -22,10 +22,15 @@ public class PickUpScript : MonoBehaviour {
 	void OnTriggerEnter(Collider col)
 	{
 		if (col.tag == "Player"){
-			if (PickupType == PickupTypes.HEALTH)
+			if (PickupType == PickupTypes.HEALTH){
 				_player.ChangeHealth(AmountRestored);
-			else if (PickupType == PickupTypes.ENERGY)
+				FMOD_StudioSystem.instance.PlayOneShot("event:/HealthPickup", transform.position);
+			}
+			else if (PickupType == PickupTypes.ENERGY){
 				_player.ChangeEnergy(AmountRestored);
+				FMOD_StudioSystem.instance.PlayOneShot("event:/EnergyPickup", transform.position);
+
+			}
 			gameObject.SetActive(false);
 		}
 	}
