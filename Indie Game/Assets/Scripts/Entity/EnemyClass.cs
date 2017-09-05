@@ -62,13 +62,18 @@ public class EnemyClass : Entity {
 
 	protected virtual void Movement()
 	{
+		// Determine distance to player
 		float distanceToPlayer = Vector3.Distance (transform.position, _player.position);
+		
+		// Move forward with a given speed
 		_rigidbody.AddForce(transform.forward * 500f);
 
+		// If player is within range of sight, move towards them
 		if (distanceToPlayer < aggroRange)
 		{
 			_destination = _player.position;
 		}
+		// If not in range, move around original spawn location
 		else if (distanceToPlayer > aggroRange)
 			_destination = _origin;
 
@@ -77,8 +82,10 @@ public class EnemyClass : Entity {
 	protected virtual void Turning()
 	{
 		if (_destination != null){
+			// If Destination is known, and we aren't directly on it right now...
 			if (Vector3.Distance(transform.position, _destination) > 0.1f)
 			{
+				// ... we turn towards our destination.
 				Vector3 direction = new Vector3((_destination - transform.position).normalized.x, 0, 0);
 				Quaternion lookRotation = Quaternion.LookRotation(direction);
 				
