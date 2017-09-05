@@ -291,20 +291,27 @@ public class PlayerMovement : MonoBehaviour
 		if (Input.GetButtonDown(fireString) && ready == true)
 		{
 			if (_owner.Shurikens > 0){
+				// Lower internal amount of ammo for the player
 				_owner.Shurikens--;
-
+				// Instantiate an object to be thrown in the direction of the mouse position
 				GameObject shuriken = Instantiate(Resources.Load("Shuriken", typeof(GameObject))) as GameObject;
 				shuriken.transform.position = transform.position;
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				// Use Raycast to determine position relative to mouse
 				Vector3 newpos = ray.origin + (ray.direction * Camera.main.GetComponent<SmoothFollow>().distance);
 				Vector3 dir = newpos - transform.position;
 				dir.Normalize();
+				
+				// Play throwing sound
 				FMOD_StudioSystem.instance.PlayOneShot("event:/ShurikenThrow", transform.position);
 
+				// Add force to the object to be thrown
 				shuriken.GetComponent<Rigidbody>().AddForce(dir * (1000f + 100 *_rigidbody.velocity.magnitude), ForceMode.Force); // Throw Shuriken
-				_rigidbody.AddForce(new Vector3(-dir.x * 10000f,0 ,0)); //Knockback Player
+				
+				// Knockback Player
+				_rigidbody.AddForce(new Vector3(-dir.x * 10000f,0 ,0)); 
 
-
+				// Make sure the player can't immediately throw another object
 				ready = false;
 				utime = 0;
 			}
