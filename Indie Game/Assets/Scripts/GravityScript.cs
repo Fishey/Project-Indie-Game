@@ -34,15 +34,25 @@ public class GravityScript : MonoBehaviour {
 
 	public void Flip()
 	{
+		// Find root of all current enemies in the scene
 		_enemies = GameObject.Find("Enemies").transform;
+		
+		// Set vertical gravity to reverse of current
 		Physics.gravity = new Vector3(0, -Physics.gravity.y, 0);
+		
+		// Check if the gravity is currently flipped
 		if (!_flipped){
+			// Play a sound based on the current gravity state
 			FMOD_StudioSystem.instance.PlayOneShot("event:/GravitySwitcherUp", transform.position);
-
+			
+			// Set the target rotation values to the opposite of what they were before
 			_qTo = _qFlip;
 			_qToCamera = _qFlipCamera;
+			
 			_flipped = true;
 			_flyingEnemyScripts = _enemies.GetComponentsInChildren<EnemyClass>();
+			
+			// Make sure the camera position gets adjusted with reversed gravity
 			cameraFollowScript.Height -= cameraFollowScript.Height;
 		}
 		else {
@@ -56,10 +66,9 @@ public class GravityScript : MonoBehaviour {
 			
 		}
 		
-		_qToEnemy = _qTo;
-		//_qTo.y = _player.rotation.y;
-		Done = false;
-		UpdateRotationEnemy();
+		_qToEnemy = _qTo; // Set target rotation of enemies to previously set values
+		Done = false; // Start rotating towards the target
+		UpdateRotationEnemy(); // Flip all enemies
 	}
 
 	void Update() {
